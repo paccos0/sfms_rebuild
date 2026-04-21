@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: #020617;
+}
+
+body {
+  @apply bg-dashboard-gradient text-slate-100 antialiased;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.glass {
+  @apply border border-white/10 bg-white/10 backdrop-blur-xl shadow-glass;
+}
+
+.input {
+  @apply w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-brand-400/70 focus:ring-2 focus:ring-brand-500/20;
+}
+
+.label {
+  @apply mb-2 block text-sm font-medium text-slate-300;
+}
+
+.page-shell {
+  @apply min-h-screen bg-dashboard-gradient;
+}
+
+.page-container {
+  @apply mx-auto w-full max-w-7xl px-4 py-6 md:px-6;
+}
+
+.table-wrap {
+  @apply overflow-hidden rounded-3xl border border-white/10 bg-white/5;
+}
