@@ -79,7 +79,7 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES (1,'bursar','$2a$12$NKRE/8Jq0vE32EHxhma0T.KHn0iuiY9wXNaxs2o6KLH5PCj/uhnAa','admin','MUNYANEZA','Basile',NULL,NULL,NULL,1,'2026-04-21 03:10:56','2026-04-21 01:10:35','2026-04-21 01:10:56'),(2,'regohdev','$2a$12$pl93jz2EbJcaASIN9WQKXu7kAxHL0iIGXpj1vFP.dgSdr2v5/MMzi','admin','NIYOMUGABA','Pacifique',NULL,NULL,NULL,1,NULL,'2026-04-21 01:14:32','2026-04-21 01:14:32');
+INSERT INTO `admin` VALUES (1,'bursar','$2a$12$NKRE/8Jq0vE32EHxhma0T.KHn0iuiY9wXNaxs2o6KLH5PCj/uhnAa','admin','MUNYANEZA','Basile',NULL,NULL,NULL,1,'2026-04-21 03:58:52','2026-04-21 01:10:35','2026-04-21 01:58:52'),(2,'regohdev','$2a$12$pl93jz2EbJcaASIN9WQKXu7kAxHL0iIGXpj1vFP.dgSdr2v5/MMzi','admin','NIYOMUGABA','Pacifique',NULL,NULL,NULL,1,NULL,'2026-04-21 01:14:32','2026-04-21 01:14:32');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +178,7 @@ CREATE TABLE `payment` (
   CONSTRAINT `fk_payment_admin` FOREIGN KEY (`received_by_admin_id`) REFERENCES `admin` (`admin_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_payment_enrollment` FOREIGN KEY (`enrollment_id`) REFERENCES `student_enrollment` (`enrollment_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_payment_term` FOREIGN KEY (`term_id`) REFERENCES `term` (`term_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +187,7 @@ CREATE TABLE `payment` (
 
 LOCK TABLES `payment` WRITE;
 /*!40000 ALTER TABLE `payment` DISABLE KEYS */;
-INSERT INTO `payment` VALUES (1,23,6,'PAY-2026-04-21-03-41-55-2287',100000.00,'bank','2026-04-21 03:41:00',1,NULL,'2026-04-21 01:41:55','2026-04-21 01:41:55');
+INSERT INTO `payment` VALUES (1,23,6,'PAY-2026-04-21-03-41-55-2287',100000.00,'bank','2026-04-21 03:41:00',1,NULL,'2026-04-21 01:41:55','2026-04-21 01:41:55'),(2,24,5,'PAY-2026-04-21-23-57-46-2218',90000.00,'cash','2026-04-21 23:57:00',1,NULL,'2026-04-21 21:57:46','2026-04-21 21:57:46'),(3,24,5,'PAY-2026-04-21-23-59-23-7447',5000.00,'bank','2026-04-21 23:58:00',1,NULL,'2026-04-21 21:59:23','2026-04-21 21:59:23'),(4,22,5,'PAY-2026-04-22-00-00-39-5552',100000.00,'cash','2026-04-22 00:00:00',1,NULL,'2026-04-21 22:00:39','2026-04-21 22:00:39');
 /*!40000 ALTER TABLE `payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,7 +246,7 @@ CREATE TABLE `student` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`student_id`),
   UNIQUE KEY `registration_number` (`registration_number`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +255,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (1,'REG-2024-0001','Aline','Uwimana','female','2008-03-15','0788000001','Jean Uwimana','0789000001','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(2,'REG-2024-0002','Eric','Niyonzima','male','2007-07-21','0788000002','Vestine Mukamana','0789000002','Huye','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(3,'REG-2024-0003','Grace','Mukandayisenga','female','2008-01-12','0788000003','Samuel Habimana','0789000003','Musanze','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(4,'REG-2024-0004','Claude','Hakizimana','male','2006-10-05','0788000004','Alice Nyirahabimana','0789000004','Rubavu','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(5,'REG-2024-0005','Diane','Uwera','female','2007-12-30','0788000005','Patrick Uwera','0789000005','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(6,'REG-2024-0006','Kevin','Nsengiyumva','male','2008-05-18','0788000006','Beata Mukarugwiza','0789000006','Muhanga','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(7,'REG-2024-0007','Sonia','Ingabire','female','2007-09-14','0788000007','Emmanuel Ingabire','0789000007','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(8,'REG-2024-0008','Patrick','Nshimiyimana','male','2006-11-09','0788000008','Odette Uwamariya','0789000008','Rwamagana','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(9,'REG-2024-0009','Brenda','Niyonkuru','female','2008-02-22','0788000009','Theogene Nkurunziza','0789000009','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(10,'REG-2024-0010','Samuel','Mugisha','male','2007-04-10','0788000010','Esperance Mukeshimana','0789000010','Nyagatare','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(11,'REG-2024-0011','Yvette','Mukamana','female','2006-08-17','0788000011','Joseph Mukamana','0789000011','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(12,'REG-2024-0012','David','Ndayisaba','male','2008-06-03','0788000012','Annonciata Nyiransabimana','0789000012','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39');
+INSERT INTO `student` VALUES (1,'REG-2024-0001','Aline','Uwimana','female','2008-03-15','0788000001','Jean Uwimana','0789000001','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(2,'REG-2024-0002','Eric','Niyonzima','male','2007-07-21','0788000002','Vestine Mukamana','0789000002','Huye','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(3,'REG-2024-0003','Grace','Mukandayisenga','female','2008-01-12','0788000003','Samuel Habimana','0789000003','Musanze','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(4,'REG-2024-0004','Claude','Hakizimana','male','2006-10-05','0788000004','Alice Nyirahabimana','0789000004','Rubavu','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(5,'REG-2024-0005','Diane','Uwera','female','2007-12-30','0788000005','Patrick Uwera','0789000005','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(6,'REG-2024-0006','Kevin','Nsengiyumva','male','2008-05-18','0788000006','Beata Mukarugwiza','0789000006','Muhanga','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(7,'REG-2024-0007','Sonia','Ingabire','female','2007-09-14','0788000007','Emmanuel Ingabire','0789000007','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(8,'REG-2024-0008','Patrick','Nshimiyimana','male','2006-11-09','0788000008','Odette Uwamariya','0789000008','Rwamagana','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(9,'REG-2024-0009','Brenda','Niyonkuru','female','2008-02-22','0788000009','Theogene Nkurunziza','0789000009','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(10,'REG-2024-0010','Samuel','Mugisha','male','2007-04-10','0788000010','Esperance Mukeshimana','0789000010','Nyagatare','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(11,'REG-2024-0011','Yvette','Mukamana','female','2006-08-17','0788000011','Joseph Mukamana','0789000011','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(12,'REG-2024-0012','David','Ndayisaba','male','2008-06-03','0788000012','Annonciata Nyiransabimana','0789000012','Kigali','active','2026-04-18 00:51:39','2026-04-18 00:51:39'),(13,'REG-2024-0013','Niyomugaba','Pacifique','male','2026-04-21',NULL,'MUKANDORI Josiane','0798870993','Kigali','active','2026-04-21 21:52:05','2026-04-21 21:52:37'),(14,'0014','MUNYANEZA','Basile','male','2026-04-22',NULL,NULL,NULL,NULL,'active','2026-04-21 22:24:50','2026-04-21 22:24:50');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -316,7 +316,7 @@ CREATE TABLE `student_enrollment` (
   CONSTRAINT `fk_enrollment_category` FOREIGN KEY (`category_id`) REFERENCES `student_category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_enrollment_student` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_enrollment_year_class` FOREIGN KEY (`year_class_id`) REFERENCES `year_class` (`year_class_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,7 +325,7 @@ CREATE TABLE `student_enrollment` (
 
 LOCK TABLES `student_enrollment` WRITE;
 /*!40000 ALTER TABLE `student_enrollment` DISABLE KEYS */;
-INSERT INTO `student_enrollment` VALUES (1,1,1,1,1,'new','active','2024-09-02','Joined L3 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(2,2,1,2,2,'new','active','2024-09-02','Joined L3 SOD B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(3,3,1,6,1,'new','active','2024-09-02','Joined L3 NIT A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(4,4,1,10,2,'continuing','active','2024-09-02','Joined S4 ACC A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(5,5,1,3,1,'continuing','active','2024-09-02','Joined L4 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(6,6,1,8,2,'new','active','2024-09-02','Joined L4 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(7,7,1,12,1,'continuing','active','2024-09-02','Joined S5 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(8,8,1,13,2,'continuing','graduated','2024-09-02','Final year completed','2026-04-18 00:51:39','2026-04-18 00:51:39'),(9,9,1,7,1,'new','transferred','2024-09-02','Transferred after Term 1','2026-04-18 00:51:39','2026-04-18 00:51:39'),(10,10,1,11,2,'continuing','active','2024-09-02','Joined S4 ACC B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(11,11,1,9,1,'continuing','active','2024-09-02','Joined L5 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(12,12,1,4,2,'new','repeated','2024-09-02','Will repeat next year','2026-04-18 00:51:39','2026-04-18 00:51:39'),(13,1,2,15,1,'continuing','active','2025-09-03','Promoted to L4 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(14,2,2,14,2,'continuing','active','2025-09-03','Promoted to merged L3 SOD','2026-04-18 00:51:39','2026-04-18 00:51:39'),(15,3,2,18,1,'continuing','active','2025-09-03','Promoted to merged L3 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(16,4,2,21,2,'continuing','active','2025-09-03','Promoted to S4 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(17,5,2,16,1,'continuing','active','2025-09-03','Promoted to L4 SOD B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(18,6,2,19,2,'continuing','active','2025-09-03','Promoted to L4 NIT A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(19,7,2,22,1,'continuing','active','2025-09-03','Promoted to S5 ACC A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(20,9,2,18,1,'new','active','2025-09-03','Re-registered after previous transfer scenario for testing','2026-04-18 00:51:39','2026-04-18 00:51:39'),(21,10,2,21,2,'continuing','active','2025-09-03','Promoted to S4 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(22,11,2,20,1,'continuing','active','2025-09-03','Promoted to L5 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(23,12,2,16,2,'continuing','repeated','2025-09-03','Repeated class in new year','2026-04-18 00:51:39','2026-04-18 00:51:39');
+INSERT INTO `student_enrollment` VALUES (1,1,1,1,1,'new','active','2024-09-02','Joined L3 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(2,2,1,2,2,'new','active','2024-09-02','Joined L3 SOD B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(3,3,1,6,1,'new','active','2024-09-02','Joined L3 NIT A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(4,4,1,10,2,'continuing','active','2024-09-02','Joined S4 ACC A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(5,5,1,3,1,'continuing','active','2024-09-02','Joined L4 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(6,6,1,8,2,'new','active','2024-09-02','Joined L4 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(7,7,1,12,1,'continuing','active','2024-09-02','Joined S5 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(8,8,1,13,2,'continuing','graduated','2024-09-02','Final year completed','2026-04-18 00:51:39','2026-04-18 00:51:39'),(9,9,1,7,1,'new','transferred','2024-09-02','Transferred after Term 1','2026-04-18 00:51:39','2026-04-18 00:51:39'),(10,10,1,11,2,'continuing','active','2024-09-02','Joined S4 ACC B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(11,11,1,9,1,'continuing','active','2024-09-02','Joined L5 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(12,12,1,4,2,'new','repeated','2024-09-02','Will repeat next year','2026-04-18 00:51:39','2026-04-18 00:51:39'),(13,1,2,15,1,'continuing','active','2025-09-03','Promoted to L4 SOD A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(14,2,2,14,2,'continuing','active','2025-09-03','Promoted to merged L3 SOD','2026-04-18 00:51:39','2026-04-18 00:51:39'),(15,3,2,18,1,'continuing','active','2025-09-03','Promoted to merged L3 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(16,4,2,21,2,'continuing','active','2025-09-03','Promoted to S4 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(17,5,2,16,1,'continuing','active','2025-09-03','Promoted to L4 SOD B','2026-04-18 00:51:39','2026-04-18 00:51:39'),(18,6,2,19,2,'continuing','active','2025-09-03','Promoted to L4 NIT A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(19,7,2,22,1,'continuing','active','2025-09-03','Promoted to S5 ACC A','2026-04-18 00:51:39','2026-04-18 00:51:39'),(20,9,2,18,1,'new','active','2025-09-03','Re-registered after previous transfer scenario for testing','2026-04-18 00:51:39','2026-04-18 00:51:39'),(21,10,2,21,2,'continuing','active','2025-09-03','Promoted to S4 ACC','2026-04-18 00:51:39','2026-04-18 00:51:39'),(22,11,2,20,1,'continuing','active','2025-09-03','Promoted to L5 NIT','2026-04-18 00:51:39','2026-04-18 00:51:39'),(23,12,2,16,2,'continuing','repeated','2025-09-03','Repeated class in new year','2026-04-18 00:51:39','2026-04-18 00:51:39'),(24,13,2,17,1,'continuing','active','2026-04-21',NULL,'2026-04-21 21:55:39','2026-04-21 21:55:39'),(25,14,2,17,2,'new','active','2026-04-22',NULL,'2026-04-21 22:24:50','2026-04-21 22:24:50');
 /*!40000 ALTER TABLE `student_enrollment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,7 +353,7 @@ CREATE TABLE `student_penalty` (
   KEY `fk_penalty_admin` (`created_by_admin_id`),
   CONSTRAINT `fk_penalty_admin` FOREIGN KEY (`created_by_admin_id`) REFERENCES `admin` (`admin_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_penalty_enrollment` FOREIGN KEY (`enrollment_id`) REFERENCES `student_enrollment` (`enrollment_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -362,6 +362,7 @@ CREATE TABLE `student_penalty` (
 
 LOCK TABLES `student_penalty` WRITE;
 /*!40000 ALTER TABLE `student_penalty` DISABLE KEYS */;
+INSERT INTO `student_penalty` VALUES (1,21,'Damaged School Property','Damaged dishes',5000.00,'unpaid','2026-04-21 04:00:00',NULL,1,'2026-04-21 02:00:26','2026-04-21 02:00:59');
 /*!40000 ALTER TABLE `student_penalty` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -441,4 +442,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-21  3:48:16
+-- Dump completed on 2026-04-22  1:41:49

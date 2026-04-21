@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { jwtVerify, SignJWT } from "jose";
 import type { SessionUser } from "@/types";
+import "server-only";
 
 export const SESSION_COOKIE_NAME = "sfms_session";
 

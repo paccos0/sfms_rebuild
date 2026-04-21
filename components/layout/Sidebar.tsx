@@ -23,7 +23,7 @@ export default function Sidebar() {
           SFMS
         </p>
         <h2 className="mt-2 text-xl font-semibold text-white">
-          School Fees System
+          OROSHYA APP
         </h2>
       </div>
 
