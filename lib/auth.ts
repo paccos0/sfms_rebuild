@@ -29,10 +29,10 @@ export async function findAdminByUsername(username: string) {
         last_name,
         is_active
       FROM admin
-      WHERE username = :username
+      WHERE username = ?
       LIMIT 1
     `,
-    { username }
+    [username]
   );
 
   return rows[0] ?? null;
@@ -68,9 +68,9 @@ export async function updateLastLogin(adminId: number) {
     `
       UPDATE admin
       SET last_login_at = NOW()
-      WHERE admin_id = :adminId
+      WHERE admin_id = ?
     `,
-    { adminId }
+    [adminId]
   );
 }
 
