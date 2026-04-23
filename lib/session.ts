@@ -18,13 +18,7 @@ function getSecretKey() {
 }
 
 export async function createSessionToken(user: SessionUser) {
-  return await new SignJWT({
-    admin_id: user.admin_id,
-    username: user.username,
-    first_name: user.first_name,
-    last_name: user.last_name,
-    role: user.role
-  })
+  return await new SignJWT({ user })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${COOKIE_MAX_AGE}s`)
@@ -36,14 +30,13 @@ export async function verifySessionToken(token?: string | null) {
 
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
+    const user = payload.user as SessionUser | undefined;
 
-    return {
-      admin_id: Number(payload.admin_id),
-      username: String(payload.username),
-      first_name: String(payload.first_name),
-      last_name: String(payload.last_name),
-      role: payload.role as SessionUser["role"]
-    } satisfies SessionUser;
+    if (!user?.role || !user.display_name) {
+      return null;
+    }
+
+    return user;
   } catch {
     return null;
   }
@@ -75,6 +68,5 @@ export async function clearSessionCookie() {
 export async function getSessionUserFromCookies() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-
   return verifySessionToken(token);
 }

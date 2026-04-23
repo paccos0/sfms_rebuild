@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/session";
 
-const protectedRoutes = [
+const adminProtectedRoutes = [
   "/dashboard",
   "/academic-years",
   "/terms",
@@ -16,26 +16,47 @@ const protectedRoutes = [
   "/profile"
 ];
 
-const authRoutes = ["/login"];
+const portalProtectedRoutes = ["/portal/dashboard"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = await verifySessionToken(token);
 
-  if (isProtectedRoute && !session) {
-    const url = new URL("/login", request.url);
-    return NextResponse.redirect(url);
+  const isAdminProtected = adminProtectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  const isPortalProtected = portalProtectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  if (isAdminProtected) {
+    if (!session || !["admin", "bursar"].includes(session.role)) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
-  if (isAuthRoute && session) {
-    const url = new URL("/dashboard", request.url);
-    return NextResponse.redirect(url);
+  if (isPortalProtected) {
+    if (!session || !["student", "parent"].includes(session.role)) {
+      return NextResponse.redirect(new URL("/portal", request.url));
+    }
+  }
+
+  if (pathname === "/login" && session) {
+    if (["student", "parent"].includes(session.role)) {
+      return NextResponse.redirect(new URL("/portal/dashboard", request.url));
+    }
+
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (pathname === "/portal" && session) {
+    if (["student", "parent"].includes(session.role)) {
+      return NextResponse.redirect(new URL("/portal/dashboard", request.url));
+    }
+
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
@@ -55,6 +76,7 @@ export const config = {
     "/penalties/:path*",
     "/reports/:path*",
     "/profile/:path*",
+    "/portal/:path*",
     "/login"
   ]
 };

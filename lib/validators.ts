@@ -1,4 +1,9 @@
-import type { ChangePasswordPayload, LoginPayload } from "@/types";
+import type {
+  ChangePasswordPayload,
+  LoginPayload,
+  ParentRegistrationPayload,
+  PortalLoginPayload
+} from "@/types";
 
 export function validateLoginPayload(payload: Partial<LoginPayload>) {
   const errors: Record<string, string> = {};
@@ -9,6 +14,44 @@ export function validateLoginPayload(payload: Partial<LoginPayload>) {
 
   if (!payload.password?.trim()) {
     errors.password = "Password is required.";
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+}
+
+export function validatePortalLoginPayload(
+  payload: Partial<PortalLoginPayload>
+) {
+  const errors: Record<string, string> = {};
+
+  if (!payload.regNo?.trim()) {
+    errors.regNo = "Student RegNo is required.";
+  }
+
+  if (!payload.accountType) {
+    errors.accountType = "Account type is required.";
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+}
+
+export function validateParentRegistrationPayload(
+  payload: Partial<ParentRegistrationPayload>
+) {
+  const errors: Record<string, string> = {};
+
+  if (!payload.full_name?.trim()) {
+    errors.full_name = "Full name is required.";
+  }
+
+  if (!payload.regNo?.trim()) {
+    errors.regNo = "Student RegNo is required.";
   }
 
   return {

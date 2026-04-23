@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "bursar";
+export type UserRole = "admin" | "bursar" | "student" | "parent";
 export type Gender = "male" | "female";
 export type AdmissionType = "new" | "continuing";
 
