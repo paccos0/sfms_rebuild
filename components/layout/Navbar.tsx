@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSessionUserFromCookies } from "@/lib/session";
+import SkeletonBlock from "@/components/ui/SkeletonBlock";
 
 export default async function Navbar() {
   const user = await getSessionUserFromCookies();
@@ -17,13 +18,23 @@ export default async function Navbar() {
 
       <div className="flex items-center gap-3">
         <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-          <p className="text-sm font-semibold text-white">
-            {user ? `${user.first_name} ${user.last_name}` : "Guest"}
-          </p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
-            {user?.role ?? "unknown"}
-          </p>
+          {user ? (
+            <>
+              <p className="text-sm font-semibold text-white">
+                {user.first_name} {user.last_name}
+              </p>
+              <p className="text-xs uppercase tracking-wide text-slate-400">
+                {user.role}
+              </p>
+            </>
+          ) : (
+            <div className="space-y-2">
+              <SkeletonBlock className="h-4 w-28" />
+              <SkeletonBlock className="h-3 w-16" />
+            </div>
+          )}
         </div>
+
         <Link
           href="/profile"
           className="rounded-2xl border border-white/10 px-4 py-3 text-sm text-slate-200 transition hover:bg-white/10"

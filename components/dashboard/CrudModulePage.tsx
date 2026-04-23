@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import SkeletonBlock from "@/components/ui/SkeletonBlock";
+import SkeletonTable from "@/components/ui/SkeletonTable";
 
 type Option = { label: string; value: string | number };
 
@@ -124,9 +126,11 @@ export default function CrudModulePage<T extends Record<string, any>>({
   function openEdit(item: T) {
     setEditingItem(item);
     const nextForm = { ...initialValues };
+
     for (const field of fields) {
       nextForm[field.name] = normalizeForForm(field, item[field.name]);
     }
+
     nextForm[String(idKey)] = item[idKey];
     setForm(nextForm);
     setOpen(true);
@@ -144,14 +148,18 @@ export default function CrudModulePage<T extends Record<string, any>>({
 
   function sanitizePayload() {
     const payload: Record<string, any> = {};
+
     for (const field of fields) {
       const value = form[field.name];
+
       if (field.type === "checkbox") {
         payload[field.name] = value ? 1 : 0;
         continue;
       }
+
       payload[field.name] = value === "" ? null : value;
     }
+
     if (editingItem) payload[String(idKey)] = editingItem[idKey];
     return payload;
   }
@@ -162,6 +170,7 @@ export default function CrudModulePage<T extends Record<string, any>>({
 
     try {
       const payload = sanitizePayload();
+
       if (editingItem) {
         await api.put(apiPath, payload);
         toast.success(`${title.slice(0, -1) || title} updated successfully.`);
@@ -169,6 +178,7 @@ export default function CrudModulePage<T extends Record<string, any>>({
         await api.post(apiPath, payload);
         toast.success(`${title.slice(0, -1) || title} created successfully.`);
       }
+
       closeModal();
       await loadItems();
       await loadOptions();
@@ -181,7 +191,9 @@ export default function CrudModulePage<T extends Record<string, any>>({
 
   async function handleDelete(item: T) {
     const id = item[idKey];
+
     if (!window.confirm(`Delete this ${title.slice(0, -1).toLowerCase()}?`)) return;
+
     try {
       await api.delete(`${apiPath}?id=${id}`);
       toast.success(`${title.slice(0, -1) || title} deleted successfully.`);
@@ -200,6 +212,7 @@ export default function CrudModulePage<T extends Record<string, any>>({
           <h2 className="mt-2 text-3xl font-bold text-white">{title}</h2>
           <p className="mt-2 max-w-3xl text-sm text-slate-300">{description}</p>
         </div>
+
         <div className="flex gap-3">
           <Button variant="secondary" onClick={loadItems}>
             <RefreshCcw className="mr-2 h-4 w-4" /> Refresh
@@ -214,9 +227,14 @@ export default function CrudModulePage<T extends Record<string, any>>({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-lg font-semibold text-white">Live data and actions</h3>
-            <p className="mt-1 text-sm text-slate-300">Create, edit, and delete records directly from this page.</p>
+            <p className="mt-1 text-sm text-slate-300">
+              Create, edit, and delete records directly from this page.
+            </p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-200">{loading ? "Loading..." : countLabel}</div>
+
+          <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-200">
+            {loading ? <SkeletonBlock className="h-5 w-24" /> : countLabel}
+          </div>
         </div>
       </Card>
 
@@ -226,30 +244,60 @@ export default function CrudModulePage<T extends Record<string, any>>({
             <thead className="bg-white/5">
               <tr>
                 {columns.map((column) => (
-                  <th key={String(column.key)} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">{column.header}</th>
+                  <th
+                    key={String(column.key)}
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300"
+                  >
+                    {column.header}
+                  </th>
                 ))}
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-white/5">
-              {!loading && items.length === 0 ? (
+              {loading ? (
+                <SkeletonTable columnCount={columns.length} rowCount={6} />
+              ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-sm text-slate-400">No records found.</td>
+                  <td
+                    colSpan={columns.length + 1}
+                    className="px-4 py-8 text-center text-sm text-slate-400"
+                  >
+                    No records found.
+                  </td>
                 </tr>
               ) : (
                 items.map((item, index) => (
                   <tr key={String(item[idKey] ?? index)} className="hover:bg-white/5">
                     {columns.map((column) => (
-                      <td key={String(column.key)} className="px-4 py-3 text-sm text-slate-200 align-top">
+                      <td
+                        key={String(column.key)}
+                        className="px-4 py-3 text-sm text-slate-200 align-top"
+                      >
                         {column.render ? column.render(item) : String(item[column.key as keyof T] ?? "-")}
                       </td>
                     ))}
+
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <Button type="button" variant="secondary" className="px-3 py-2" onClick={() => openEdit(item)}>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className="px-3 py-2"
+                          onClick={() => openEdit(item)}
+                        >
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button type="button" variant="danger" className="px-3 py-2" onClick={() => handleDelete(item)}>
+
+                        <Button
+                          type="button"
+                          variant="danger"
+                          className="px-3 py-2"
+                          onClick={() => handleDelete(item)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -267,9 +315,12 @@ export default function CrudModulePage<T extends Record<string, any>>({
           <div className="glass max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl p-6">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-xl font-semibold text-white">{editingItem ? `Edit ${title.slice(0, -1)}` : `Add ${title.slice(0, -1)}`}</h3>
+                <h3 className="text-xl font-semibold text-white">
+                  {editingItem ? `Edit ${title.slice(0, -1)}` : `Add ${title.slice(0, -1)}`}
+                </h3>
                 <p className="mt-1 text-sm text-slate-300">Fill the form below and save your changes.</p>
               </div>
+
               <Button type="button" variant="ghost" className="px-3 py-2" onClick={closeModal}>
                 <X className="h-4 w-4" />
               </Button>
@@ -315,7 +366,9 @@ export default function CrudModulePage<T extends Record<string, any>>({
                         >
                           <option value="">Select {field.label.toLowerCase()}</option>
                           {options.map((option) => (
-                            <option key={String(option.value)} value={option.value}>{option.label}</option>
+                            <option key={String(option.value)} value={option.value}>
+                              {option.label}
+                            </option>
                           ))}
                         </select>
                       </>
@@ -337,8 +390,12 @@ export default function CrudModulePage<T extends Record<string, any>>({
               })}
 
               <div className="mt-2 flex justify-end gap-3 md:col-span-2">
-                <Button type="button" variant="secondary" onClick={closeModal}>Cancel</Button>
-                <Button type="submit" disabled={submitting}>{submitting ? "Saving..." : editingItem ? "Update" : "Create"}</Button>
+                <Button type="button" variant="secondary" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? "Saving..." : editingItem ? "Update" : "Create"}
+                </Button>
               </div>
             </form>
           </div>
