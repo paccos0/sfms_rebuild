@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSessionUserFromCookies } from "@/lib/session";
 import SkeletonBlock from "@/components/ui/SkeletonBlock";
+import CalculatorPopup from "@/components/CalculatorPopup";
 
 export default async function Navbar() {
   const user = await getSessionUserFromCookies();
@@ -16,7 +17,7 @@ export default async function Navbar() {
         </h1>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
           {user ? (
             <>
@@ -34,6 +35,8 @@ export default async function Navbar() {
             </div>
           )}
         </div>
+
+        <CalculatorPopup />
 
         <Link
           href="/profile"

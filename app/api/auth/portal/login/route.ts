@@ -18,11 +18,11 @@ export async function POST(request: NextRequest) {
 
     const user =
       body.accountType === "parent"
-        ? await verifyParentPortalAccess(body.regNo)
-        : await verifyStudentPortalAccess(body.regNo);
+        ? await verifyParentPortalAccess(body.regNo, body.password)
+        : await verifyStudentPortalAccess(body.regNo, body.password);
 
     if (!user) {
-      return errorResponse("Invalid RegNo for selected account type.", 401);
+      return errorResponse("Invalid credentials for selected account type.", 401);
     }
 
     const token = await createSessionToken(user);

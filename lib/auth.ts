@@ -23,6 +23,7 @@ type StudentRow = RowDataPacket & {
   first_name: string;
   last_name: string;
   parent_name: string | null;
+  parent_phone: string | null;
   student_status: "active" | "inactive";
 };
 
@@ -30,10 +31,16 @@ type ParentRow = RowDataPacket & {
   parent_id: number;
   student_id: number;
   full_name: string;
+  phone: string;
+  password_hash: string;
   is_active: number;
-  registration_number: string;
-  first_name: string;
-  last_name: string;
+};
+
+type StudentAccountRow = RowDataPacket & {
+  student_account_id: number;
+  student_id: number;
+  password_hash: string;
+  is_active: number;
 };
 
 export async function findAdminByUsername(username: string) {
@@ -99,6 +106,7 @@ export async function findStudentByRegNo(regNo: string) {
         first_name,
         last_name,
         parent_name,
+        parent_phone,
         student_status
       FROM student
       WHERE registration_number = ?
@@ -114,16 +122,14 @@ export async function findParentByStudentId(studentId: number) {
   const [rows] = await db.query<ParentRow[]>(
     `
       SELECT
-        pa.parent_id,
-        pa.student_id,
-        pa.full_name,
-        pa.is_active,
-        s.registration_number,
-        s.first_name,
-        s.last_name
-      FROM parent_account pa
-      INNER JOIN student s ON s.student_id = pa.student_id
-      WHERE pa.student_id = ?
+        parent_id,
+        student_id,
+        full_name,
+        phone,
+        password_hash,
+        is_active
+      FROM parent_account
+      WHERE student_id = ?
       LIMIT 1
     `,
     [studentId]
@@ -132,12 +138,44 @@ export async function findParentByStudentId(studentId: number) {
   return rows[0] ?? null;
 }
 
+export async function findStudentAccountByStudentId(studentId: number) {
+  const [rows] = await db.query<StudentAccountRow[]>(
+    `
+      SELECT
+        student_account_id,
+        student_id,
+        password_hash,
+        is_active
+      FROM student_account
+      WHERE student_id = ?
+      LIMIT 1
+    `,
+    [studentId]
+  );
+
+  return rows[0] ?? null;
+}
+
+
 export async function verifyStudentPortalAccess(
-  regNo: string
+  regNo: string,
+  password: string
 ): Promise<SessionUser | null> {
   const student = await findStudentByRegNo(regNo);
 
   if (!student || student.student_status !== "active") {
+    return null;
+  }
+
+  const account = await findStudentAccountByStudentId(student.student_id);
+
+  if (!account || !account.is_active) {
+    return null;
+  }
+
+  const matches = await bcrypt.compare(password, account.password_hash);
+
+  if (!matches) {
     return null;
   }
 
@@ -148,12 +186,14 @@ export async function verifyStudentPortalAccess(
     first_name: student.first_name,
     last_name: student.last_name,
     parent_name: student.parent_name,
+    parent_phone: student.parent_phone,
     display_name: `${student.first_name} ${student.last_name}`
   };
 }
 
 export async function verifyParentPortalAccess(
-  regNo: string
+  regNo: string,
+  password: string
 ): Promise<SessionUser | null> {
   const student = await findStudentByRegNo(regNo);
 
@@ -167,6 +207,12 @@ export async function verifyParentPortalAccess(
     return null;
   }
 
+  const matches = await bcrypt.compare(password, parent.password_hash);
+
+  if (!matches) {
+    return null;
+  }
+
   return {
     role: "parent",
     parent_id: parent.parent_id,
@@ -175,6 +221,7 @@ export async function verifyParentPortalAccess(
     first_name: student.first_name,
     last_name: student.last_name,
     parent_name: parent.full_name,
+    parent_phone: parent.phone,
     display_name: parent.full_name
   };
 }
@@ -183,9 +230,15 @@ function normalizeName(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+function normalizePhone(value: string) {
+  return value.trim().replace(/\s+/g, "");
+}
+
 export async function registerParentAccount(
   fullName: string,
-  regNo: string
+  phone: string,
+  regNo: string,
+  password: string
 ): Promise<SessionUser | { error: string; status: number }> {
   const student = await findStudentByRegNo(regNo);
 
@@ -213,32 +266,45 @@ export async function registerParentAccount(
   }
 
   const incomingName = normalizeName(fullName);
-  const existingParentName = normalizeName(student.parent_name ?? "");
+  const incomingPhone = normalizePhone(phone);
+  const currentParentName = normalizeName(student.parent_name ?? "");
+  const currentParentPhone = normalizePhone(student.parent_phone ?? "");
 
-  if (student.parent_name?.trim() && existingParentName !== incomingName) {
+  if (student.parent_name?.trim() && currentParentName !== incomingName) {
     return {
       error: "This student is already assigned to another parent name.",
       status: 409
     };
   }
 
-  if (!student.parent_name?.trim()) {
+  if (student.parent_phone?.trim() && currentParentPhone !== incomingPhone) {
+    return {
+      error: "This student is already assigned to another parent phone number.",
+      status: 409
+    };
+  }
+
+  if (!student.parent_name?.trim() || !student.parent_phone?.trim()) {
     await db.query(
       `
         UPDATE student
-        SET parent_name = ?
+        SET
+          parent_name = COALESCE(NULLIF(parent_name, ''), ?),
+          parent_phone = COALESCE(NULLIF(parent_phone, ''), ?)
         WHERE student_id = ?
       `,
-      [fullName.trim(), student.student_id]
+      [fullName.trim(), phone.trim(), student.student_id]
     );
   }
 
+  const passwordHash = await bcrypt.hash(password, 12);
+
   const [result] = await db.query<ResultSetHeader>(
     `
-      INSERT INTO parent_account (student_id, full_name)
-      VALUES (?, ?)
+      INSERT INTO parent_account (student_id, full_name, phone, password_hash)
+      VALUES (?, ?, ?, ?)
     `,
-    [student.student_id, fullName.trim()]
+    [student.student_id, fullName.trim(), phone.trim(), passwordHash]
   );
 
   return {
@@ -249,7 +315,59 @@ export async function registerParentAccount(
     first_name: student.first_name,
     last_name: student.last_name,
     parent_name: fullName.trim(),
+    parent_phone: phone.trim(),
     display_name: fullName.trim()
+  };
+}
+
+export async function registerStudentAccount(
+  regNo: string,
+  password: string
+): Promise<SessionUser | { error: string; status: number }> {
+  const student = await findStudentByRegNo(regNo);
+
+  if (!student) {
+    return {
+      error: "RegNo not available.",
+      status: 404
+    };
+  }
+
+  if (student.student_status !== "active") {
+    return {
+      error: "This student account is not active.",
+      status: 422
+    };
+  }
+
+  const existingAccount = await findStudentAccountByStudentId(student.student_id);
+
+  if (existingAccount) {
+    return {
+      error: "Student account already exists. Please login instead.",
+      status: 409
+    };
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  await db.query<ResultSetHeader>(
+    `
+      INSERT INTO student_account (student_id, password_hash)
+      VALUES (?, ?)
+    `,
+    [student.student_id, passwordHash]
+  );
+
+  return {
+    role: "student",
+    student_id: student.student_id,
+    registration_number: student.registration_number,
+    first_name: student.first_name,
+    last_name: student.last_name,
+    parent_name: student.parent_name,
+    parent_phone: student.parent_phone,
+    display_name: `${student.first_name} ${student.last_name}`
   };
 }
 

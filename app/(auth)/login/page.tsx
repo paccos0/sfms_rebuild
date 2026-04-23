@@ -56,39 +56,19 @@ export default function LoginPage() {
   return (
     <div className="page-shell flex min-h-screen items-center justify-center px-4 py-10">
       <div className="grid w-full max-w-5xl gap-6 lg:grid-cols-2">
-        <Card className="hidden lg:flex lg:flex-col lg:justify-between">
+        <Card className="hidden lg:flex lg:flex-col lg:justify-center">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-brand-400">
-              School Finance
+              Administration
             </p>
-            <h1 className="mt-4 text-4xl font-bold text-white">
-              Production-ready SFMS starter
-            </h1>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300">
-              Built for academic-year-aware enrollments, general fee structure,
-              secure session auth, and maintainable route handlers.
-            </p>
-          </div>
 
-          <div className="grid gap-4">
-            <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="h-5 w-5 text-brand-400" />
-                <p className="font-semibold text-white">Cookie session auth</p>
-              </div>
-              <p className="mt-2 text-sm text-slate-300">
-                Login uses an HttpOnly signed cookie and protected API routes.
-              </p>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center gap-3">
-                <LockKeyhole className="h-5 w-5 text-brand-400" />
-                <p className="font-semibold text-white">Role-aware access</p>
-              </div>
-              <p className="mt-2 text-sm text-slate-300">
-                Admin and bursar roles are supported from the start.
-              </p>
-            </div>
+            <h1 className="mt-4 text-4xl font-bold text-white">
+              OROSHYA APP
+            </h1>
+
+            <p className="mt-4 max-w-md text-sm leading-6 text-slate-400">
+              Secure access for authorized school staff.
+            </p>
           </div>
         </Card>
 

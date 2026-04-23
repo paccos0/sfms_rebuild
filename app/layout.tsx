@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "SFMS",
-  description: "School Fees Management System"
+export const metadata = {
+  title: {
+    default: "OROSHYA APP",
+    template: "%s | OROSHYA APP"
+  },
+  description: "School Fees Management System",
+  icons: {
+    icon: "/icon.png"
+  }
 };
-
 export default function RootLayout({
   children
 }: Readonly<{
@@ -16,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-right" closeButton duration={2000}  />
       </body>
     </html>
   );

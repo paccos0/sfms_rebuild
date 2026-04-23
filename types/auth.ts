@@ -11,7 +11,8 @@ export type SessionUser = {
   registration_number?: string;
   first_name?: string;
   last_name?: string;
-  parent_name?: string;
+  parent_name?: string | null;
+  parent_phone?: string | null;
 };
 
 export type LoginPayload = {
@@ -21,16 +22,24 @@ export type LoginPayload = {
 
 export type PortalLoginPayload = {
   regNo: string;
+  password: string;
   accountType: "student" | "parent";
 };
 
 export type ParentRegistrationPayload = {
   full_name: string;
+  phone: string;
   regNo: string;
+  password: string;
 };
 
 export type ChangePasswordPayload = {
   current_password: string;
   new_password: string;
   confirm_password: string;
+};
+
+export type StudentRegistrationPayload = {
+  regNo: string;
+  password: string;
 };
