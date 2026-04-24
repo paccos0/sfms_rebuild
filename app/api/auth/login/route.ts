@@ -19,10 +19,17 @@ export async function POST(request: NextRequest) {
       return errorResponse("Invalid username or password", 401);
     }
 
+    // ✅ Ensure admin_id is valid
+    const adminId = user.admin_id;
+
+    if (typeof adminId !== "number") {
+      return errorResponse("Invalid admin account.", 500);
+    }
+
     const token = await createSessionToken(user);
 
     await setSessionCookie(token);
-    await updateLastLogin(user.admin_id);
+    await updateLastLogin(adminId);
 
     return successResponse(
       {
