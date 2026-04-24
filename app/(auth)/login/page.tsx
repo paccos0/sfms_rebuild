@@ -8,7 +8,9 @@ import api from "@/lib/axios";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import TextField from "@/components/forms/TextField";
+import Image from "next/image";
 import type { ApiSuccessResponse, SessionUser } from "@/types";
+
 
 type FormState = {
   username: string;
@@ -56,21 +58,36 @@ export default function LoginPage() {
   return (
     <div className="page-shell flex min-h-screen items-center justify-center px-4 py-10">
       <div className="grid w-full max-w-5xl gap-6 lg:grid-cols-2">
-        <Card className="hidden lg:flex lg:flex-col lg:justify-center">
-          <div>
-            <p className="text-xs uppercase tracking-[0.25em] text-brand-400">
-              Administration
-            </p>
+        
 
-            <h1 className="mt-4 text-4xl font-bold text-white">
-              OROSHYA APP
-            </h1>
+<Card className="hidden lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
+  <div className="flex flex-col items-center">
+    {/* Logo */}
+    <div className="relative h-28 w-28 lg:h-36 lg:w-36 rounded-3xl bg-white/10 border border-white/10 shadow-lg overflow-hidden">
+      <Image
+        src="/icon.png"
+        alt="Oroshya Logo"
+        fill
+        priority
+        className="object-contain p-3"
+      />
+    </div>
 
-            <p className="mt-4 max-w-md text-sm leading-6 text-slate-400">
-              Secure access for authorized school staff.
-            </p>
-          </div>
-        </Card>
+    {/* Title */}
+    <p className="mt-6 text-xs uppercase tracking-[0.25em] text-brand-400">
+      Administration
+    </p>
+
+    <h1 className="mt-3 text-4xl font-bold text-white">
+      OROSHYA APP
+    </h1>
+
+    {/* Subtitle */}
+    <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
+      Secure access for authorized school staff.
+    </p>
+  </div>
+</Card>
 
         <Card className="mx-auto w-full max-w-xl p-8">
           <div>

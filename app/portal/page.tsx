@@ -17,6 +17,7 @@ import api from "@/lib/axios";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/forms/TextField";
+import Image from "next/image";
 
 type PortalMode = "student" | "parent";
 type PortalAction = "login" | "register";
@@ -443,20 +444,26 @@ export default function PortalAuthPage() {
       <div className="mx-auto grid w-full max-w-7xl gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
         <Card className="order-2 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl sm:p-6 lg:order-1 lg:min-h-[760px] lg:p-8">
           <div className="flex h-full flex-col justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-400/20 bg-brand-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Student & Parent Portal
+            <div className="flex flex-col items-center text-center">
+              {/* Logo */}
+              <div className="relative h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36">
+                <Image
+                  src="/icon.png"
+                  alt="Oroshya Logo"
+                  fill
+                  priority
+                  className="object-contain"
+                />
               </div>
 
-              <h1 className="mt-5 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-5xl">
-                Access school fee details with a cleaner, simpler portal.
+              {/* Title */}
+              <h1 className="mt-5 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+                Student & Parent Portal
               </h1>
 
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-                Students and parents can securely access financial details,
-                outstanding balances, and school payment information using the
-                same portal experience.
+              {/* Subtitle */}
+              <p className="mt-3 max-w-md text-sm leading-6 text-slate-400">
+                Check school fees, balances, and payment details.
               </p>
             </div>
 
@@ -566,17 +573,15 @@ export default function PortalAuthPage() {
               <button
                 type="button"
                 onClick={() => switchMode("student")}
-                className={`rounded-2xl border px-4 py-4 text-left transition ${
-                  mode === "student"
+                className={`rounded-2xl border px-4 py-4 text-left transition ${mode === "student"
                     ? "border-brand-400/40 bg-brand-500/15"
                     : "border-white/10 bg-black/20 hover:bg-white/10"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`rounded-2xl p-2.5 ${
-                      mode === "student" ? "bg-brand-500/20" : "bg-white/10"
-                    }`}
+                    className={`rounded-2xl p-2.5 ${mode === "student" ? "bg-brand-500/20" : "bg-white/10"
+                      }`}
                   >
                     <UserRound className="h-5 w-5 text-white" />
                   </div>
@@ -592,17 +597,15 @@ export default function PortalAuthPage() {
               <button
                 type="button"
                 onClick={() => switchMode("parent")}
-                className={`rounded-2xl border px-4 py-4 text-left transition ${
-                  mode === "parent"
+                className={`rounded-2xl border px-4 py-4 text-left transition ${mode === "parent"
                     ? "border-brand-400/40 bg-brand-500/15"
                     : "border-white/10 bg-black/20 hover:bg-white/10"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`rounded-2xl p-2.5 ${
-                      mode === "parent" ? "bg-brand-500/20" : "bg-white/10"
-                    }`}
+                    className={`rounded-2xl p-2.5 ${mode === "parent" ? "bg-brand-500/20" : "bg-white/10"
+                      }`}
                   >
                     <UsersRound className="h-5 w-5 text-white" />
                   </div>
@@ -620,11 +623,10 @@ export default function PortalAuthPage() {
               <button
                 type="button"
                 onClick={() => switchAction("login")}
-                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                  action === "login"
+                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${action === "login"
                     ? "border-brand-400/40 bg-brand-500/15 text-white"
                     : "border-white/10 bg-black/20 text-slate-300 hover:bg-white/10"
-                }`}
+                  }`}
               >
                 <span className="inline-flex items-center gap-2">
                   <LogIn className="h-4 w-4" />
@@ -635,11 +637,10 @@ export default function PortalAuthPage() {
               <button
                 type="button"
                 onClick={() => switchAction("register")}
-                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                  action === "register"
+                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${action === "register"
                     ? "border-brand-400/40 bg-brand-500/15 text-white"
                     : "border-white/10 bg-black/20 text-slate-300 hover:bg-white/10"
-                }`}
+                  }`}
               >
                 <span className="inline-flex items-center gap-2">
                   <UserPlus2 className="h-4 w-4" />
@@ -676,8 +677,8 @@ export default function PortalAuthPage() {
                       ? "Already registered as a student? Sign in with your RegNo and password."
                       : "New student access is created using a valid school registration number."
                     : action === "login"
-                    ? "Parent login requires the linked student RegNo and the password you created during registration."
-                    : "Parent registration links your details to the student if the provided information passes validation."}
+                      ? "Parent login requires the linked student RegNo and the password you created during registration."
+                      : "Parent registration links your details to the student if the provided information passes validation."}
                 </p>
               </div>
             </div>

@@ -8,9 +8,6 @@ export const metadata = {
     template: "%s | OROSHYA APP"
   },
   description: "School Fees Management System",
-  icons: {
-    icon: "/icon.png"
-  }
 };
 export default function RootLayout({
   children
