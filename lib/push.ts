@@ -1,11 +1,21 @@
 import webPush from "web-push";
 import db from "@/lib/db";
 
-webPush.setVapidDetails(
-  process.env.VAPID_SUBJECT || "mailto:ggamk24@gmail.com",
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
-  process.env.VAPID_PRIVATE_KEY || ""
-);
+function configureWebPush() {
+  const subject = process.env.VAPID_SUBJECT || "mailto:admin@oroshya.app";
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+
+  if (!publicKey || !privateKey) {
+    console.warn(
+      "Push notifications are disabled because VAPID keys are not configured."
+    );
+    return false;
+  }
+
+  webPush.setVapidDetails(subject, publicKey, privateKey);
+  return true;
+}
 
 export async function sendPushToStudent(
   studentId: number,
@@ -15,6 +25,12 @@ export async function sendPushToStudent(
     url?: string;
   }
 ) {
+  const isConfigured = configureWebPush();
+
+  if (!isConfigured) {
+    return;
+  }
+
   const [rows] = await db.query<any[]>(
     `
       SELECT push_subscription_id, subscription_json
