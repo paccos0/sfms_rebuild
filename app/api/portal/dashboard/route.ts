@@ -26,6 +26,25 @@ type BankRow = RowDataPacket & {
   account_number: string;
 };
 
+type PaymentHistoryRow = RowDataPacket & {
+  payment_id: number;
+  payment_ref: string;
+  amount_paid: number;
+  payment_method: string;
+  paid_at: string;
+  term_name: string;
+  academic_year_name: string;
+};
+
+type NotificationRow = RowDataPacket & {
+  notification_id: number;
+  title: string;
+  message: string;
+  notification_type: "payment" | "general" | "warning";
+  is_read: number;
+  created_at: string;
+};
+
 export async function GET(request: NextRequest) {
   const authResult = await requireRole(request, ["student", "parent"]);
 
@@ -35,6 +54,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const sessionUser = authResult.user;
+
     const targetStudentId =
       sessionUser.role === "parent"
         ? sessionUser.linked_student_id
@@ -52,7 +72,10 @@ export async function GET(request: NextRequest) {
           s.first_name,
           s.last_name,
           s.parent_name,
-          CONCAT(ct.class_name, IF(yc.section IS NOT NULL, CONCAT(' ', yc.section), '')) AS class_name,
+          CONCAT(
+            ct.class_name,
+            IF(yc.section IS NOT NULL AND yc.section != '', CONCAT(' ', yc.section), '')
+          ) AS class_name,
           ay.name AS academic_year_name,
           t.name AS term_name,
           se.enrollment_id,
@@ -87,8 +110,9 @@ export async function GET(request: NextRequest) {
           ON pay.enrollment_id = se.enrollment_id
          AND pay.term_id = ss.current_term_id
         LEFT JOIN (
-          SELECT enrollment_id,
-                 SUM(CASE WHEN penalty_status = 'unpaid' THEN amount ELSE 0 END) AS unpaid_penalties
+          SELECT
+            enrollment_id,
+            SUM(CASE WHEN penalty_status = 'unpaid' THEN amount ELSE 0 END) AS unpaid_penalties
           FROM student_penalty
           GROUP BY enrollment_id
         ) pen
@@ -123,6 +147,51 @@ export async function GET(request: NextRequest) {
       `
     );
 
+    const [paymentHistoryRows] = await db.query<PaymentHistoryRow[]>(
+      `
+        SELECT
+          p.payment_id,
+          p.payment_ref,
+          p.amount_paid,
+          p.payment_method,
+          DATE_FORMAT(p.paid_at, '%Y-%m-%d %H:%i') AS paid_at,
+          t.name AS term_name,
+          ay.name AS academic_year_name
+        FROM payment p
+        INNER JOIN student_enrollment se
+          ON se.enrollment_id = p.enrollment_id
+        INNER JOIN term t
+          ON t.term_id = p.term_id
+        INNER JOIN academic_year ay
+          ON ay.academic_year_id = t.academic_year_id
+        WHERE se.student_id = ?
+        ORDER BY p.paid_at DESC, p.payment_id DESC
+        LIMIT 20
+      `,
+      [targetStudentId]
+    );
+
+    const [notificationRows] = await db.query<NotificationRow[]>(
+      `
+        SELECT
+          notification_id,
+          title,
+          message,
+          notification_type,
+          is_read,
+          DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS created_at
+        FROM portal_notification
+        WHERE student_id = ?
+        ORDER BY created_at DESC, notification_id DESC
+        LIMIT 10
+      `,
+      [targetStudentId]
+    );
+
+    const unreadNotifications = notificationRows.filter(
+      (notification) => Number(notification.is_read) === 0
+    ).length;
+
     return successResponse(
       {
         viewer: {
@@ -149,12 +218,35 @@ export async function GET(request: NextRequest) {
           bank_name: row.bank_name,
           account_name: row.account_name,
           account_number: row.account_number
-        }))
+        })),
+        payment_history: paymentHistoryRows.map((row) => ({
+          payment_id: row.payment_id,
+          payment_ref: row.payment_ref,
+          amount_paid: Number(row.amount_paid ?? 0),
+          payment_method: row.payment_method,
+          paid_at: row.paid_at,
+          term_name: row.term_name,
+          academic_year_name: row.academic_year_name
+        })),
+        notifications: {
+          unread_count: unreadNotifications,
+          items: notificationRows.map((row) => ({
+            notification_id: row.notification_id,
+            title: row.title,
+            message: row.message,
+            notification_type: row.notification_type,
+            is_read: Boolean(row.is_read),
+            created_at: row.created_at
+          }))
+        }
       },
       "Portal dashboard fetched successfully"
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Portal dashboard route error:", error);
-    return errorResponse("Unable to fetch portal dashboard data", 500);
+    return errorResponse(
+      error?.sqlMessage || "Unable to fetch portal dashboard data",
+      500
+    );
   }
 }

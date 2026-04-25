@@ -11,6 +11,7 @@ const adminProtectedRoutes = [
   "/enrollments",
   "/fees",
   "/payments",
+  "/outstanding-fees",
   "/penalties",
   "/reports",
   "/profile"

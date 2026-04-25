@@ -17,7 +17,8 @@ import {
   TriangleAlert,
   Users,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  WalletCards
 } from "lucide-react";
 
 const links = [
@@ -30,8 +31,10 @@ const links = [
   { href: "/enrollments", label: "Enrollments", icon: Shield },
   { href: "/fees", label: "Fees", icon: BadgeDollarSign },
   { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/outstanding-fees", label: "Outstanding Fees", icon: WalletCards },
   { href: "/penalties", label: "Penalties", icon: TriangleAlert },
   { href: "/reports", label: "Reports", icon: FileText }
+  
 ];
 
 export default function Sidebar() {
